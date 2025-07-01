@@ -10,5 +10,10 @@ class TypeController
         $type = new Type($this->pdo);
         return $type->affiche();
     }
+    public function getNbr()
+    {
+        $type = new Type($this->pdo);
+        return $type->nombrePokemonsParType();
+    }
 }
 ?>

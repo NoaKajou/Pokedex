@@ -1,11 +1,11 @@
 <?php
-// Chargement des contrôleurs
+// Chargement des contrôleurs nécessaires pour accéder aux données
 require_once 'controller/generation_controller.php';
 require_once 'controller/type_controller.php';
 require_once 'controller/pokemon_controller.php';
 require_once 'controller/pokemon_type_controller.php';
 
-// Fonction pour initialiser les données
+// Fonction pour charger toutes les données utiles à l'affichage
 function loadData() {
     $typeController = new TypeController();
     $generationController = new GenerationController();
@@ -27,18 +27,10 @@ $pokemonTypeController = new PokemonTypeController();
 <head>
     <meta charset="UTF-8">
     <title>New Pokedex</title>
-    <link rel="stylesheet" href="css/index.css">    <div class="pokemon-type">
-                                <?php
-                                $types = $pokemonTypeController->getTypesByPokemon($pokemon['id']);
-                                foreach ($types as $type): ?>
-                                    <span class="type type-<?= strtolower($type['name']) ?>">
-                                        <?= htmlspecialchars($type['name']) ?>
-                                    </span>
-                                <?php endforeach; ?>
-                            </div>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body class="loading">
-    <!-- Loader -->
+    <!-- Loader affiché pendant le chargement de la page -->
     <div id="loader">
         <video autoplay loop muted id="loader-animation">
             <source src="images/animation.webm" type="video/webm">
@@ -47,10 +39,11 @@ $pokemonTypeController = new PokemonTypeController();
         </video>
     </div>
 
-    <!-- Le haut du Pokedex -->
+    <!-- Conteneur principal du Pokédex -->
     <div class="pokedex">
+        <!-- En-tête du Pokédex avec les lumières décoratives -->
         <div class="pokedex-header">
-            <div class="circle"></div>
+            <a href="stats.php" class = circle></a>
             <div class="lights">
                 <div class="light red"></div>
                 <div class="light yellow"></div>
@@ -60,7 +53,7 @@ $pokemonTypeController = new PokemonTypeController();
         <div class="pokedex-content">
             <h1>Pokédex</h1>
             
-            <!-- Barre de recherche par nom-->
+            <!-- Barre de recherche par nom, type et génération -->
             <form class="search-bar" method="GET" action="index.php">
                 <input type="text" name="name" placeholder="Rechercher par nom" value="<?= htmlspecialchars($_GET['name'] ?? '') ?>">
                 
@@ -87,11 +80,12 @@ $pokemonTypeController = new PokemonTypeController();
                 <button type="submit">Rechercher</button>
             </form>
 
+            <!-- Affichage des Pokémon sous forme de grille -->
             <div class="pokemon-container">
                 <?php 
                 $counter = 0;
                 foreach ($data['pokemons'] as $pokemon): 
-                    // Filtrage par nom, type et génération
+                    // Filtrage par nom, type et génération selon la recherche utilisateur
                     if (!empty($_GET['name']) && stripos($pokemon['name'], $_GET['name']) === false) continue;
                     if (!empty($_GET['type']) && !in_array($_GET['type'], array_column($pokemonTypeController->getTypesByPokemon($pokemon['id']), 'name'))) continue;
                     if (!empty($_GET['generation']) && $pokemon['id_gen'] != $_GET['generation']) continue;
@@ -100,6 +94,7 @@ $pokemonTypeController = new PokemonTypeController();
                         </div><div class="pokemon-container">
                     <?php endif; ?>
 
+                    <!-- Carte d'un Pokémon individuel -->
                     <div class="pokemon-item">
                         <a href="fiche_pokemon.php?id=<?= $pokemon['id'] ?>">
                             <div class="pokemon-number">
@@ -111,6 +106,7 @@ $pokemonTypeController = new PokemonTypeController();
                             </div>
                             <div class="pokemon-type">
                                 <?php
+                                // Affichage des types du Pokémon
                                 $types = $pokemonTypeController->getTypesByPokemon($pokemon['id']);
                                 foreach ($types as $type): ?>
                                     <span class="type type-<?= strtolower($type['name']) ?>">
@@ -125,6 +121,7 @@ $pokemonTypeController = new PokemonTypeController();
                 endforeach; ?>
             </div>
         </div>
+        <!-- Pied de page du Pokédex -->
         <div class="pokedex-footer">
             <div class="screen"></div>
         </div>
@@ -138,4 +135,4 @@ $pokemonTypeController = new PokemonTypeController();
         });
     </script>
 </body>
-</html> 
+</html>

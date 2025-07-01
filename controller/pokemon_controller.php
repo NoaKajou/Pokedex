@@ -13,7 +13,7 @@ class PokemonController
     public function getPokemonById($id)
     {
         $pokemon = new Pokemon($this->pdo);
-        return $pokemon->affichePokemon($id); // Passe l'ID ici
+        return $pokemon->affichePokemon($id);
     }
     public function getPokemonsByGeneration($id_gen)
     {
